@@ -1,0 +1,28 @@
+{
+  "name": "brighte-eats",
+  "version": "1.0.0",
+  "description": "A simple API for collecting and viewing expressions of interest for Brighte Eats.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kmarellano/feedback-form.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kmarellano/feedback-form/issues"
+  },
+  "homepage": "https://github.com/kmarellano/feedback-form#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/types": "^19.8.0",
+    "husky": "^9.1.7"
+  }
+}
