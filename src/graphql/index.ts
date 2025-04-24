@@ -7,7 +7,7 @@ const typeDefinitions = loadFilesSync(
   {
     extensions: ['ts'],
     ignoreIndex: true,
-  }
+  },
 );
 
 const schemaResolvers = loadFilesSync(
@@ -16,7 +16,7 @@ const schemaResolvers = loadFilesSync(
     extensions: ['ts'],
     ignoreIndex: true,
     exportNames: ['resolvers'],
-  }
+  },
 );
 
 export const typeDefs = mergeTypeDefs(typeDefinitions);

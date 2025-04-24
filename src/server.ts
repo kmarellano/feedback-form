@@ -28,13 +28,11 @@ app.use(
   '/graphql',
   cors<cors.CorsRequest>(),
   express.json(),
-  expressMiddleware(apolloServer)
+  expressMiddleware(apolloServer),
 );
 
 const PORT = SERVER_CONFIG.PORT;
-await new Promise<void>((resolve) =>
-  httpServer.listen({ port: PORT }, resolve)
-);
+await new Promise<void>(resolve => httpServer.listen({ port: PORT }, resolve));
 
 console.log(`🚀 Server ready at ${PORT}`);
 
