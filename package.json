@@ -9,6 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "prepare": "husky && husky install",
+    "db:migrate": "prisma migrate dev --name",
+    "db:generate": "prisma generate",
     "lint": "eslint"
   },
   "repository": {
@@ -37,6 +39,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "3.5.3",
+    "prisma": "^6.6.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
@@ -48,6 +51,7 @@
     "@graphql-tools/load-files": "^7.0.1",
     "@graphql-tools/merge": "^9.0.24",
     "@graphql-tools/utils": "^10.8.6",
+    "@prisma/client": "^6.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "graphql": "^16.10.0",
