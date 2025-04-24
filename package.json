@@ -8,7 +8,8 @@
     "start": "tsx dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
-    "prepare": "husky"
+    "prepare": "husky && husky install",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -26,14 +27,20 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@commitlint/types": "^19.8.0",
+    "@eslint/js": "^9.25.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.1",
+    "eslint": "^9.25.1",
     "express": "^5.1.0",
+    "globals": "^16.0.0",
     "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
+    "prettier": "3.5.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.0"
   },
   "dependencies": {
     "@apollo/server": "^4.12.0",
@@ -46,5 +53,9 @@
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
     "helmet": "^8.1.0"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --cache-location node_modules --max-warnings 1",
+    "*.{ts,json}": "prettier --write --ignore-unknown"
   }
 }
