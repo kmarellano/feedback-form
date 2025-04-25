@@ -11,11 +11,9 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@apollo/server/express4';
 import { GraphQLResolverMap } from '@apollo/subgraph/dist/schema-helper';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { PrismaClient } from './generated/prisma';
+import { createContext } from './context';
 
 const httpServer = http.createServer(app);
-const prisma = new PrismaClient();
-
 const apolloServer = new ApolloServer({
   schema: buildSubgraphSchema({
     typeDefs,
@@ -31,9 +29,7 @@ app.use(
   cors<cors.CorsRequest>(),
   express.json(),
   expressMiddleware(apolloServer, {
-    context: async () => ({
-      prisma,
-    }),
+    context: createContext,
   }),
 );
 
