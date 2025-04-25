@@ -1,6 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { ZodError } from 'zod';
-import { leadInputSchema } from '@/validations/lead.validation';
+import {
+  leadInputSchema,
+  findOneLeadSchema,
+} from '@/validations/lead.validation';
 import { LeadQueries, LeadMutations } from '@/types/lead';
 import { Prisma } from '@/generated/prisma';
 
@@ -21,17 +24,34 @@ const Query: LeadQueries = {
   },
 
   lead: async (_parent, args, context) => {
-    const { id } = args;
-    return {
-      id,
-      name: 'name',
-      email: 'test@gmail.com',
-      mobile: '123123123',
-      postcode: '1422',
-      preferredService: 'DELIVERY',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    try {
+      const { id, email, mobile } = findOneLeadSchema.parse(args);
+
+      const whereClause = id ? { id } : email ? { email } : { mobile };
+      const lead = await context.prisma.lead.findUnique({
+        where: whereClause,
+      });
+
+      if (!lead) {
+        throw new GraphQLError('Lead not found', {
+          extensions: {
+            code: 'NOT_FOUND',
+          },
+        });
+      }
+
+      return lead;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new GraphQLError(error.issues[0].message, {
+          extensions: {
+            code: 'VALIDATION_ERROR',
+          },
+        });
+      }
+
+      throw error;
+    }
   },
 };
 
@@ -65,7 +85,7 @@ const Mutation: LeadMutations = {
         throw new Error(error.message || 'Cannot create new lead.');
       }
 
-      throw new Error('An unknown error occurred while creating new lead.');
+      throw error;
     }
   },
 };

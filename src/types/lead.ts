@@ -1,16 +1,15 @@
 import { z } from 'zod';
 import { Lead } from './models';
 import { Context } from '@/context';
-import { leadInputSchema } from '@/validations/lead.validation';
-
-interface LeadParameter {
-  id: string;
-}
+import {
+  leadInputSchema,
+  findOneLeadSchema,
+} from '@/validations/lead.validation';
 
 export interface LeadQueries {
   lead: (
     parent: unknown,
-    args: LeadParameter,
+    args: z.infer<typeof findOneLeadSchema>,
     context: Context,
   ) => Promise<Lead>;
 

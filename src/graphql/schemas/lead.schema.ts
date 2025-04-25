@@ -20,7 +20,7 @@ export const typeDefs = gql`
 
   type Query {
     leads: [Lead!]!
-    lead(id: ID!): Lead
+    lead(id: ID, email: String, mobile: String): Lead
   }
 
   input RegisterInput {
