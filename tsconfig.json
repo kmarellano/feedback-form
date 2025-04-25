@@ -116,7 +116,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/config/*": ["./src/config/*"]
+      "@/config/*": ["./src/config/*"],
+      "@/gql": ["./src/graphql"],
+      "@/context/*": ["./src/types/*"]
     }
   },
   "include": ["src/**/*"],
