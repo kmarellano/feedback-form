@@ -9,8 +9,8 @@ export const nameSchema = z
 
 export const emailSchema = z
   .string({ message: 'A valid email is required.' })
-  .email('Invalid email format')
-  .trim();
+  .trim()
+  .email('Invalid email format');
 
 export const mobileSchema = z
   .string({ invalid_type_error: 'A valid mobile is required.' })
@@ -24,8 +24,8 @@ export const uuidSchema = z
 
 export const dateSchema = z
   .string()
-  .date('Date must be in the format YYYY-MM-DD')
-  .trim();
+  .trim()
+  .date('Date must be in the format YYYY-MM-DD');
 
 export const postCodeSchema = z
   .string({ required_error: 'Post code is required' })
