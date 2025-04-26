@@ -5,7 +5,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import { app } from './app';
 import { SERVER_CONFIG } from '@/config/appConfig';
 import { typeDefs, resolvers } from '@/gql';
-
 import { ApolloServer } from '@apollo/server';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -21,6 +20,12 @@ const apolloServer = new ApolloServer({
     resolvers: resolvers as GraphQLResolverMap<unknown>,
   }),
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), loggerPlugin],
+  formatError(formattedError) {
+    return {
+      message: formattedError.message,
+      errorCode: formattedError?.extensions?.code || 'INTERNAL_SERVER_ERROR',
+    };
+  },
 });
 
 await apolloServer.start();
