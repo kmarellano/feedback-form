@@ -12,7 +12,7 @@ import { Prisma } from '@/generated/prisma';
 const Query: LeadQueries = {
   leads: async (_parent, args, context) => {
     try {
-      const { filterBy, pagination } = args;
+      const { filterBy = {}, pagination = {} } = args;
       const parsedParams = findManyLeadSchema.parse(filterBy);
       const parsedPagination = paginationSchema.parse(pagination);
 
