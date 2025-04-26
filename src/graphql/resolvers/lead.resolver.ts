@@ -6,7 +6,7 @@ import {
   findManyLeadSchema,
 } from '@/validations/lead.validation';
 import { paginationSchema } from '@/validations/base.validation';
-import { PaginationOptions } from '@/types/pagination';
+import { PaginationOptions } from '@/types/queryOptions';
 import { LeadQueries, LeadMutations, LeadAttributesQuery } from '@/types/lead';
 import { Prisma } from '@/generated/prisma';
 
