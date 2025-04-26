@@ -7,6 +7,7 @@ import {
   dateSchema,
   postCodeSchema,
   ServiceTypeEnum,
+  SortOrderEnum,
 } from './base.validation';
 
 export const leadInputSchema = z
@@ -57,3 +58,8 @@ export const findOneLeadSchema = z
       });
     }
   });
+
+const sortableFields = Object.keys(findManyLeadSchema.shape) as [
+  keyof typeof findManyLeadSchema.shape,
+];
+export const leadSortSchema = z.record(z.enum(sortableFields), SortOrderEnum);

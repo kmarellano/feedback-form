@@ -48,4 +48,5 @@ export const paginationSchema = z.object({
     .default(10),
 });
 
+export const SortOrderEnum = z.enum(['asc', 'desc']);
 export const ServiceTypeEnum = z.enum(['DELIVERY', 'PAYMENT', 'PICKUP']);

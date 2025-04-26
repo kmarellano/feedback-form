@@ -4,6 +4,7 @@ import {
   leadInputSchema,
   findOneLeadSchema,
   findManyLeadSchema,
+  leadSortSchema,
 } from '@/validations/lead.validation';
 import { paginationSchema } from '@/validations/base.validation';
 import { PaginationOptions } from '@/types/queryOptions';
@@ -13,13 +14,14 @@ import { Prisma } from '@/generated/prisma';
 const Query: LeadQueries = {
   leads: async (_parent, args, context) => {
     try {
-      const { filterBy = {}, pagination = {} } = args;
+      const { filterBy = {}, pagination = {}, orderBy = {} } = args;
       const {
         name: leadName,
         createdAt: leadCreatedAt,
         ...leadFilter
       } = findManyLeadSchema.parse(filterBy);
 
+      const parsedOrderBy = leadSortSchema.parse(orderBy);
       const { paginate, limit, page } = paginationSchema.parse(pagination);
 
       let paginationOptions: PaginationOptions | Record<never, never> = {};
@@ -53,9 +55,7 @@ const Query: LeadQueries = {
       const leads = await context.prisma.lead.findMany({
         where: whereClause,
         ...paginationOptions,
-        orderBy: {
-          createdAt: 'asc',
-        },
+        orderBy: parsedOrderBy,
       });
 
       return leads;
@@ -124,8 +124,13 @@ const Mutation: LeadMutations = {
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new Error(
+          throw new GraphQLError(
             `[${error.code}]: A user with the same email or mobile number already exists.`,
+            {
+              extensions: {
+                code: 'BAD_REQUEST',
+              },
+            },
           );
         }
       }
@@ -148,4 +153,8 @@ export const resolvers = {
   Query,
   Mutation,
   Lead,
+  OrderBy: {
+    ASC: 'asc',
+    DESC: 'desc',
+  },
 };

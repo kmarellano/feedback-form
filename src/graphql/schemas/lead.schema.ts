@@ -7,6 +7,11 @@ export const typeDefs = gql`
     PICKUP
   }
 
+  enum OrderBy {
+    ASC
+    DESC
+  }
+
   type Lead {
     id: ID!
     name: String!
@@ -31,9 +36,20 @@ export const typeDefs = gql`
     createdAt: String
   }
 
+  input LeadsOrderParams {
+    name: OrderBy
+    postcode: OrderBy
+    preferredService: OrderBy
+    createdAt: OrderBy
+  }
+
   type Query {
-    leads(filterBy: LeadsParams, pagination: PaginationParams): [Lead!]!
-    lead(id: ID, email: String, mobile: String): Lead
+    leads(
+      filterBy: LeadsParams
+      pagination: PaginationParams
+      orderBy: LeadsOrderParams
+    ): [Lead!]!
+    lead(id: ID, email: String, mobile: String): Lead!
   }
 
   input RegisterInput {

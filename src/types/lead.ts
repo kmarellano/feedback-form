@@ -5,6 +5,7 @@ import {
   leadInputSchema,
   findOneLeadSchema,
   findManyLeadSchema,
+  leadSortSchema,
 } from '@/validations/lead.validation';
 import { paginationSchema } from '@/validations/base.validation';
 
@@ -20,6 +21,7 @@ export interface LeadQueries {
     args: {
       filterBy: z.infer<typeof findManyLeadSchema>;
       pagination: z.infer<typeof paginationSchema>;
+      orderBy: z.infer<typeof leadSortSchema>;
     },
     context: Context,
   ) => Promise<Lead[]>;
