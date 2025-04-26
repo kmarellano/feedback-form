@@ -32,3 +32,8 @@ export interface LeadMutations {
     context: Context,
   ) => Promise<Lead>;
 }
+
+export interface LeadAttributesQuery {
+  createdAt: (parent: Pick<Lead, 'createdAt'>) => string;
+  updatedAt: (parent: Pick<Lead, 'updatedAt'>) => string;
+}

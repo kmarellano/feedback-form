@@ -6,7 +6,7 @@ import {
   findManyLeadSchema,
 } from '@/validations/lead.validation';
 import { paginationSchema } from '@/validations/base.validation';
-import { LeadQueries, LeadMutations } from '@/types/lead';
+import { LeadQueries, LeadMutations, LeadAttributesQuery } from '@/types/lead';
 import { Prisma } from '@/generated/prisma';
 
 const Query: LeadQueries = {
@@ -99,7 +99,13 @@ const Mutation: LeadMutations = {
   },
 };
 
+const Lead: LeadAttributesQuery = {
+  createdAt: parent => parent.createdAt.toISOString(),
+  updatedAt: parent => parent.updatedAt.toISOString(),
+};
+
 export const resolvers = {
   Query,
   Mutation,
+  Lead,
 };
