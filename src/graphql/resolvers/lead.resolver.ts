@@ -1,11 +1,12 @@
-import { GraphQLError } from 'graphql';
 import { ZodError } from 'zod';
+import { GraphQLError } from 'graphql';
 import {
   leadInputSchema,
   findOneLeadSchema,
   findManyLeadSchema,
 } from '@/validations/lead.validation';
 import { paginationSchema } from '@/validations/base.validation';
+import { PaginationOptions } from '@/types/pagination';
 import { LeadQueries, LeadMutations, LeadAttributesQuery } from '@/types/lead';
 import { Prisma } from '@/generated/prisma';
 
@@ -13,12 +14,51 @@ const Query: LeadQueries = {
   leads: async (_parent, args, context) => {
     try {
       const { filterBy = {}, pagination = {} } = args;
-      const parsedParams = findManyLeadSchema.parse(filterBy);
-      const parsedPagination = paginationSchema.parse(pagination);
+      const {
+        name: leadName,
+        createdAt: leadCreatedAt,
+        ...leadFilter
+      } = findManyLeadSchema.parse(filterBy);
 
-      console.log(parsedParams, parsedPagination);
+      const { paginate, limit, page } = paginationSchema.parse(pagination);
 
-      return [];
+      let paginationOptions: PaginationOptions | Record<never, never> = {};
+      if (paginate) {
+        paginationOptions = {
+          skip: (page - 1) * limit,
+          take: limit,
+        };
+      }
+
+      const whereClause: Prisma.LeadWhereInput = { ...leadFilter };
+
+      if (leadName) {
+        whereClause.name = {
+          contains: leadName,
+          mode: 'insensitive',
+        } as Prisma.StringFilter;
+      }
+
+      if (leadCreatedAt) {
+        const currentLeadDate = new Date(leadCreatedAt);
+        const futureDate = new Date(currentLeadDate);
+        futureDate.setDate(currentLeadDate.getDate() + 1);
+
+        whereClause.createdAt = {
+          gte: currentLeadDate,
+          lt: futureDate,
+        } as Prisma.DateTimeFilter;
+      }
+
+      const leads = await context.prisma.lead.findMany({
+        where: whereClause,
+        ...paginationOptions,
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+
+      return leads;
     } catch (error) {
       if (error instanceof ZodError) {
         throw new GraphQLError(error.issues[0].message, {

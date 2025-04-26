@@ -24,9 +24,7 @@ export const uuidSchema = z
 
 export const dateSchema = z
   .string()
-  .datetime({
-    message: 'Invalid datetime string. Must be a valid ISO string.',
-  })
+  .date('Date must be in the format YYYY-MM-DD')
   .trim();
 
 export const postCodeSchema = z
