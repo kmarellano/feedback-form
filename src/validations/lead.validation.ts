@@ -1,34 +1,55 @@
 import { z } from 'zod';
-import { emailSchema, mobileSchema, uuidSchema } from './base.validation';
+import {
+  nameSchema,
+  emailSchema,
+  mobileSchema,
+  uuidSchema,
+  dateSchema,
+  postCodeSchema,
+  ServiceTypeEnum,
+} from './base.validation';
 
-export const ServiceTypeEnum = z.enum(['DELIVERY', 'PAYMENT', 'PICKUP']);
+export const leadInputSchema = z
+  .object({
+    name: nameSchema,
+    email: emailSchema,
+    mobile: mobileSchema,
+    postcode: postCodeSchema,
+    preferredService: ServiceTypeEnum,
+  })
+  .strict();
 
-export const leadInputSchema = z.object({
-  name: z.string(),
-  email: emailSchema,
-  mobile: mobileSchema,
-  postcode: z.string({ required_error: 'Post code is required' }),
-  preferredService: ServiceTypeEnum,
-});
+export const findManyLeadSchema = z
+  .object({
+    name: nameSchema,
+    postcode: postCodeSchema,
+    preferredService: ServiceTypeEnum,
+    createdAt: dateSchema,
+  })
+  .partial();
 
 export const findOneLeadSchema = z
   .object({
-    id: uuidSchema.optional(),
-    email: emailSchema.optional(),
-    mobile: mobileSchema.optional(),
+    id: uuidSchema,
+    email: emailSchema,
+    mobile: mobileSchema,
   })
+  .partial()
   .superRefine((data, ctx) => {
     const nonNullFields = [data.id, data.email, data.mobile].filter(Boolean);
-    const nullFieldsLength = nonNullFields.length;
+    const nonNullFieldsLength = nonNullFields.length;
 
-    if (!nullFieldsLength) {
+    if (!nonNullFieldsLength) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'At least one of id, email, or mobile must be provided.',
+        fatal: true,
       });
+
+      return z.NEVER;
     }
 
-    if (nullFieldsLength > 1) {
+    if (nonNullFieldsLength > 1) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['id', 'email', 'mobile'],

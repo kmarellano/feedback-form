@@ -18,8 +18,21 @@ export const typeDefs = gql`
     updatedAt: String!
   }
 
+  input PaginationParams {
+    paginate: Boolean
+    page: Int
+    limit: Int
+  }
+
+  input LeadsParams {
+    name: String
+    postcode: String
+    preferredService: ServiceType
+    createdAt: String
+  }
+
   type Query {
-    leads: [Lead!]!
+    leads(filterBy: LeadsParams, pagination: PaginationParams): [Lead!]!
     lead(id: ID, email: String, mobile: String): Lead
   }
 

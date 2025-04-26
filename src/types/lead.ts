@@ -4,7 +4,9 @@ import { Context } from '@/context';
 import {
   leadInputSchema,
   findOneLeadSchema,
+  findManyLeadSchema,
 } from '@/validations/lead.validation';
+import { paginationSchema } from '@/validations/base.validation';
 
 export interface LeadQueries {
   lead: (
@@ -13,7 +15,14 @@ export interface LeadQueries {
     context: Context,
   ) => Promise<Lead>;
 
-  leads: (parent: unknown, args: unknown, context: Context) => Promise<Lead[]>;
+  leads: (
+    parent: unknown,
+    args: {
+      filterBy: z.infer<typeof findManyLeadSchema>;
+      pagination: z.infer<typeof paginationSchema>;
+    },
+    context: Context,
+  ) => Promise<Lead[]>;
 }
 
 export interface LeadMutations {

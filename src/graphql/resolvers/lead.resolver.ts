@@ -3,24 +3,33 @@ import { ZodError } from 'zod';
 import {
   leadInputSchema,
   findOneLeadSchema,
+  findManyLeadSchema,
 } from '@/validations/lead.validation';
+import { paginationSchema } from '@/validations/base.validation';
 import { LeadQueries, LeadMutations } from '@/types/lead';
 import { Prisma } from '@/generated/prisma';
 
 const Query: LeadQueries = {
-  leads: async (_parent, _args, context) => {
-    return [
-      {
-        id: '1',
-        name: 'name',
-        email: 'test@gmail.com',
-        mobile: '123123123',
-        postcode: '1422',
-        preferredService: 'DELIVERY',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
+  leads: async (_parent, args, context) => {
+    try {
+      const { filterBy, pagination } = args;
+      const parsedParams = findManyLeadSchema.parse(filterBy);
+      const parsedPagination = paginationSchema.parse(pagination);
+
+      console.log(parsedParams, parsedPagination);
+
+      return [];
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new GraphQLError(error.issues[0].message, {
+          extensions: {
+            code: 'VALIDATION_ERROR',
+          },
+        });
+      }
+
+      throw error;
+    }
   },
 
   lead: async (_parent, args, context) => {
