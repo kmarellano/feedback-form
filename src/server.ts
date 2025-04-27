@@ -5,13 +5,13 @@ import express, { Request, Response, NextFunction } from 'express';
 import { app } from './app';
 import { SERVER_CONFIG } from '@/config/appConfig';
 import { typeDefs, resolvers } from '@/gql';
-
 import { ApolloServer } from '@apollo/server';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { expressMiddleware } from '@apollo/server/express4';
 import { GraphQLResolverMap } from '@apollo/subgraph/dist/schema-helper';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { createContext } from './context';
+import { createContext } from '@/context';
+import { loggerPlugin } from '@/plugins/logger.plugin';
 
 const httpServer = http.createServer(app);
 const apolloServer = new ApolloServer({
@@ -19,7 +19,13 @@ const apolloServer = new ApolloServer({
     typeDefs,
     resolvers: resolvers as GraphQLResolverMap<unknown>,
   }),
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), loggerPlugin],
+  formatError(formattedError) {
+    return {
+      message: formattedError.message,
+      errorCode: formattedError?.extensions?.code || 'INTERNAL_SERVER_ERROR',
+    };
+  },
 });
 
 await apolloServer.start();

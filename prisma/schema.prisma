@@ -15,11 +15,18 @@ datasource db {
 }
 
 model Lead {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  mobile    String
-  postcode  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(uuid())
+  name             String?
+  email            String   @unique
+  mobile           String   @unique
+  postcode         String
+  preferredService Services
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum Services {
+  DELIVERY
+  PAYMENT
+  PICKUP
 }

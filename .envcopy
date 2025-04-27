@@ -1,2 +1,18 @@
 PORT=4000
 NODE_ENV=development
+
+# Create 2 .env from this copy
+# .env.development && .env.test
+
+# [.env.development]
+# USE THIS WHEN RUNNING PROJECT LOCALLY VIA DOCKER-COMPOSE
+DATABASE_URL="postgresql://admin:admin@postgres:5432/brighte?schema=public"
+
+# USE THIS WHEN RUNNING PROJECT LOCALLY VIA NODE
+# DATABASE_URL="postgresql://admin:admin@localhost:5432/brighte?schema=public"
+
+# [###################### INTEGRATION TESTING ##########################]
+# [.env.test]
+# USE THIS WHEN RUNNING INTEGRATION TEST VIA "npm run test"
+# DATABASE_URL="postgresql://test:test@localhost:5433/brighte?schema=public"
+

@@ -1,22 +1,28 @@
 import path from 'path';
-import { loadFilesSync } from '@graphql-tools/load-files';
+import { fileURLToPath, pathToFileURL } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import { getFiles } from '@/utils/fileUtility';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
 
-const typeDefinitions = loadFilesSync(
-  path.join(import.meta.dirname, './schemas/*.schema.ts'),
-  {
-    extensions: ['ts'],
-    ignoreIndex: true,
-  },
+const schemaFiles = await getFiles(__dirname, 'schemas', '.schema.ts');
+const typeDefinitions = await Promise.all(
+  schemaFiles.map(async file => {
+    const filePath = pathToFileURL(file).href;
+    const module = await import(filePath);
+    return module.typeDefs;
+  }),
 );
 
-const schemaResolvers = loadFilesSync(
-  path.join(import.meta.dirname, './resolvers/*.resolver.ts'),
-  {
-    extensions: ['ts'],
-    ignoreIndex: true,
-    exportNames: ['resolvers'],
-  },
+const resolverFiles = await getFiles(__dirname, 'resolvers', '.resolver.ts');
+const schemaResolvers = await Promise.all(
+  resolverFiles.map(async file => {
+    const filePath = pathToFileURL(file).href;
+    const module = await import(filePath);
+    return module.resolvers;
+  }),
 );
 
 export const typeDefs = mergeTypeDefs(typeDefinitions);
