@@ -450,4 +450,194 @@ describe('Lead Query', () => {
       }
     });
   });
+
+  describe('Mutation [register] => CREATE NEW LEAD', () => {
+    const registerMutation = gql`
+      mutation RegisterLead($input: RegisterInput!) {
+        register(input: $input) {
+          id
+          name
+          email
+          mobile
+          postcode
+          preferredService
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    it('should successfully register a new lead', async () => {
+      const newLead = {
+        name: 'New User',
+        email: 'newuser@example.com',
+        mobile: '9999999999',
+        postcode: '1234',
+        preferredService: 'DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: newLead,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeUndefined();
+        const registeredLead = result.body.singleResult.data?.register as Lead;
+        expect(registeredLead).toBeDefined();
+
+        Object.entries(newLead).forEach(([key, value]) => {
+          expect(registeredLead[key as keyof Lead]).toBe(value);
+        });
+      }
+    });
+
+    it('should return error code of "VALIDATION_ERROR" when invalid parameters is provided', async () => {
+      const invalidLead = {
+        name: '',
+        email: 'test-gmail.com',
+        mobile: '123TEST',
+        postcode: '1234[=+|',
+        preferredService: 'DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: invalidLead,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'VALIDATION_ERROR',
+        );
+      }
+    });
+
+    it('should return error code of "BAD_USER_INPUT" when invalid "preferredService" is provided', async () => {
+      const invalidLead = {
+        name: 'test',
+        email: 'test@gmail.com',
+        mobile: '1234',
+        postcode: '1234',
+        preferredService: 'NOT_DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: invalidLead,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'BAD_USER_INPUT',
+        );
+      }
+    });
+
+    it('should return error code of "BAD_REQUEST" error when registering with duplicate email', async () => {
+      const duplicateEmailLead = {
+        name: 'Duplicate Email',
+        email: 'john@example.com',
+        mobile: '8888888888',
+        postcode: '1234',
+        preferredService: 'DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: duplicateEmailLead,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'BAD_REQUEST',
+        );
+      }
+    });
+
+    it('should return error code of "BAD_REQUEST" error when registering with duplicate mobile', async () => {
+      const duplicateMobileLead = {
+        name: 'Duplicate Mobile',
+        email: 'duplicate@example.com',
+        mobile: '1234567890',
+        postcode: '1234',
+        preferredService: 'DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: duplicateMobileLead,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'BAD_REQUEST',
+        );
+      }
+    });
+
+    it('should trim whitespace from "name", "email", "mobile", and "postcode"', async () => {
+      const leadWithWhitespace = {
+        name: '  Trim Test  ',
+        email: '  trim@example.com  ',
+        mobile: '  7777777777  ',
+        postcode: ' 1234  ',
+        preferredService: 'DELIVERY',
+      };
+
+      const result = await server.executeOperation(
+        {
+          query: registerMutation,
+          variables: {
+            input: leadWithWhitespace,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeUndefined();
+        const registeredLead = result.body.singleResult.data?.register as Lead;
+
+        Object.entries(leadWithWhitespace).forEach(([key, value]) => {
+          expect(registeredLead[key as keyof Lead]).toBe(value.trim());
+        });
+      }
+    });
+  });
 });
