@@ -281,4 +281,173 @@ describe('Lead Query', () => {
       }
     });
   });
+
+  describe('Query [lead] => GET ONE LEAD', () => {
+    const leadQuery = gql`
+      query Lead($id: ID, $email: String, $mobile: String) {
+        lead(id: $id, email: $email, mobile: $mobile) {
+          id
+          name
+          email
+          mobile
+          postcode
+          preferredService
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    it('should fetch all one lead when an "id" matches', async () => {
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            id: '3c4fc05c-3fea-4ba5-8408-504764d5e56a',
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeUndefined();
+
+        const lead = result.body.singleResult.data?.lead as Lead;
+        expect(lead).toBeDefined();
+        expect(lead.name).toBe('John Doe');
+      }
+    });
+
+    it('should fetch all one lead when an "email" matches', async () => {
+      const queryEmail = 'jane@example.com';
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            email: queryEmail,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeUndefined();
+
+        const lead = result.body.singleResult.data?.lead as Lead;
+        expect(lead).toBeDefined();
+        expect(lead.email).toBe(queryEmail);
+      }
+    });
+
+    it('should fetch all one lead when an "email" matches', async () => {
+      const queryMobile = '1122334455';
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            mobile: queryMobile,
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeUndefined();
+
+        const lead = result.body.singleResult.data?.lead as Lead;
+        expect(lead).toBeDefined();
+        expect(lead.mobile).toBe(queryMobile);
+      }
+    });
+
+    it('should return error code of "NOT_FOUND" when "id" does not match any leads', async () => {
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            id: '9a785a5b-2ad4-440d-ab56-a708f0606911',
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'NOT_FOUND',
+        );
+        const lead = result.body.singleResult.data;
+        expect(lead).toBeNull();
+      }
+    });
+
+    it('should return error code of "VALIDATION_ERROR" when "id" is not valid uui format', async () => {
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            id: 'test-test',
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'VALIDATION_ERROR',
+        );
+        const lead = result.body.singleResult.data;
+        expect(lead).toBeNull();
+      }
+    });
+
+    it('should return error code of "VALIDATION_ERROR" when no parameters are provided', async () => {
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {},
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'VALIDATION_ERROR',
+        );
+        const lead = result.body.singleResult.data;
+        expect(lead).toBeNull();
+      }
+    });
+
+    it('should return error code of "VALIDATION_ERROR" when multiple parameters are provided', async () => {
+      const result = await server.executeOperation(
+        {
+          query: leadQuery,
+          variables: {
+            id: 'test-test',
+            email: 'test@gmail.com',
+          },
+        },
+        { contextValue: { prisma } },
+      );
+
+      expect(result.body.kind).toBe('single');
+      if (result.body.kind === 'single') {
+        expect(result.body.singleResult.errors).toBeDefined();
+        expect(result.body.singleResult.errors?.[0].extensions?.code).toBe(
+          'VALIDATION_ERROR',
+        );
+        const lead = result.body.singleResult.data;
+        expect(lead).toBeNull();
+      }
+    });
+  });
 });
