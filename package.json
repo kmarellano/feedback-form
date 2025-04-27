@@ -19,9 +19,10 @@
     "lint": "eslint",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "docker:up:test": "docker compose -f docker-compose.test.yml up -d",
+    "docker:down:test": "docker compose -f docker-compose.test.yml down",
+    "docker:up:test": "npm run docker:down && docker compose -f docker-compose.test.yml up -d",
     "test:prepare": "npm run docker:up:test && npm run db:deploy:test",
-    "test": "npm run test:prepare && cross-env NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest -i"
+    "test": "npm run test:prepare && cross-env NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest -i && npm run docker:down:test"
   },
   "repository": {
     "type": "git",
