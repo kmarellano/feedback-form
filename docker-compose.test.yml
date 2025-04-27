@@ -1,14 +1,12 @@
 services:
-  postgres:
-    container_name: db_test
+  postgres_test:
+    container_name: postgres_test
     hostname: postgres
     image: 'postgres:15'
-    environment:
-      POSTGRES_DB: brighte
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
+    env_file:
+      - .env.test
     ports:
-      - '5432:5432'
+      - '5433:5432'
     restart: always
     volumes:
       - brighte_test_db:/var/lib/postgresql/data

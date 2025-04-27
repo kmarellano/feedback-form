@@ -12,6 +12,27 @@ services:
     restart: always
     volumes:
       - brighte_db:/var/lib/postgresql/data
+    networks:
+      - brighte_network
+
+  backend:
+    container_name: backend
+    hostname: backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.development
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - brighte_network
 
 volumes:
   brighte_db:
+
+networks:
+  brighte_network:
