@@ -32,7 +32,8 @@ export const postCodeSchema = z
   .regex(
     /^[\w .-]+$/,
     'Invalid postal code. Only alphanumeric characters, spaces, dashes (-), and dots (.) are allowed.',
-  );
+  )
+  .trim();
 
 export const paginationSchema = z.object({
   paginate: z.boolean().default(true),
