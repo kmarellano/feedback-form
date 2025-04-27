@@ -1,0 +1,17 @@
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: 'postgres:15'
+    environment:
+      POSTGRES_DB: brighte
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - '5432:5432'
+    restart: always
+    volumes:
+      - brighte_db:/var/lib/postgresql/data
+
+volumes:
+  brighte_db:
