@@ -10,6 +10,7 @@ export const nameSchema = z
 export const emailSchema = z
   .string({ message: 'A valid email is required.' })
   .trim()
+  .toLowerCase()
   .email('Invalid email format');
 
 export const mobileSchema = z
@@ -33,7 +34,8 @@ export const postCodeSchema = z
     /^[\w .-]+$/,
     'Invalid postal code. Only alphanumeric characters, spaces, dashes (-), and dots (.) are allowed.',
   )
-  .trim();
+  .trim()
+  .toUpperCase();
 
 export const paginationSchema = z.object({
   paginate: z.boolean().default(true),
