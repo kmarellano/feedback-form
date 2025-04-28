@@ -7,11 +7,6 @@ export const typeDefs = gql`
     PICKUP
   }
 
-  enum OrderBy {
-    ASC
-    DESC
-  }
-
   type Lead {
     id: ID!
     name: String!
@@ -21,12 +16,6 @@ export const typeDefs = gql`
     preferredService: ServiceType!
     createdAt: String!
     updatedAt: String!
-  }
-
-  input PaginationParams {
-    paginate: Boolean
-    page: Int
-    limit: Int
   }
 
   input LeadsParams {

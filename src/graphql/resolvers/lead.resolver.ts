@@ -153,8 +153,4 @@ export const resolvers = {
   Query,
   Mutation,
   Lead,
-  OrderBy: {
-    ASC: 'asc',
-    DESC: 'desc',
-  },
 };
