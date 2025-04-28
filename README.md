@@ -11,6 +11,39 @@ A simple API for collecting and viewing expressions of interest for Brighte Eats
 - Filter and sort `Leads` by various parameters
 - Paginate through `Leads` results
 
+## ⚙️ Technologies Used
+
+### Core Stack
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
+- [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
+- [Prisma ORM](https://www.prisma.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+
+### Testing
+
+- [Jest](https://jestjs.io/)
+
+### Development Tools
+
+- [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
+- [Husky](https://typicode.github.io/husky/)
+- [Commitlint](https://commitlint.js.org/)
+- [Docker](https://www.docker.com/)
+- [dotenv](https://github.com/motdotla/dotenv)
+
+### Security
+
+- [Helmet](https://helmetjs.github.io/)
+- [CORS](https://github.com/expressjs/cors)
+
+### Validation
+
+- [Zod](https://zod.dev/) - TypeScript-first schema validation
+
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed:
