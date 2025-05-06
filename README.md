@@ -7,7 +7,7 @@ A simple API for collecting and viewing expressions of interest for Brighte Eats
 ## ✨ Features
 
 - Register `Lead` interest with basic details
-- View all submitted `Leads` or a specific one
+- View all submitted `Leads` or a specific `Lead`
 - Filter and sort `Leads` by various parameters
 - Paginate through `Leads` results
 
@@ -56,8 +56,8 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-repo/brighte-eats.git
-   cd brighte-eats
+   git clone https://github.com/kmarellano/feedback-form.git
+   cd feedback-form
    ```
 
 2. Install dependencies: (Optional: run this only when running project directly with Node)
