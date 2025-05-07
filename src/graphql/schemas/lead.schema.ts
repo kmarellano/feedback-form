@@ -49,7 +49,16 @@ export const typeDefs = gql`
     preferredService: ServiceType!
   }
 
+  input UpdateLeadInput {
+    name: String
+    email: String
+    mobile: String
+    postcode: String
+    preferredService: ServiceType
+  }
+
   type Mutation {
     register(input: RegisterInput!): Lead!
+    updateLead(id: ID!, input: UpdateLeadInput): Lead!
   }
 `;

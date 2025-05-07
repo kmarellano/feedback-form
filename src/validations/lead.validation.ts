@@ -20,6 +20,8 @@ export const leadInputSchema = z
   })
   .strict();
 
+export const updateInputSchema = leadInputSchema.partial();
+
 export const findManyLeadSchema = z
   .object({
     name: nameSchema,
