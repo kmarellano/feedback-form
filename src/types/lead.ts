@@ -3,11 +3,13 @@ import { Lead } from './models';
 import { Context } from '@/context';
 import {
   leadInputSchema,
+  updateInputSchema,
   findOneLeadSchema,
   findManyLeadSchema,
   leadSortSchema,
 } from '@/validations/lead.validation';
-import { paginationSchema } from '@/validations/base.validation';
+
+import { uuidSchema, paginationSchema } from '@/validations/base.validation';
 
 export interface LeadQueries {
   lead: (
@@ -31,6 +33,15 @@ export interface LeadMutations {
   register: (
     parent: unknown,
     args: { input: z.infer<typeof leadInputSchema> },
+    context: Context,
+  ) => Promise<Lead>;
+
+  updateLead: (
+    parent: unknown,
+    args: {
+      id: z.infer<typeof uuidSchema>;
+      input: z.infer<typeof updateInputSchema>;
+    },
     context: Context,
   ) => Promise<Lead>;
 }

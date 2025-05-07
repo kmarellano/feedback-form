@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 import { GraphQLError } from 'graphql';
 import {
+  updateInputSchema,
   leadInputSchema,
   findOneLeadSchema,
   findManyLeadSchema,
@@ -137,6 +138,50 @@ const Mutation: LeadMutations = {
 
       if (error instanceof Error) {
         throw new Error(error.message || 'Cannot create new lead.');
+      }
+
+      throw error;
+    }
+  },
+
+  updateLead: async (_parent, { id, input }, { prisma }) => {
+    try {
+      const updatePayload = updateInputSchema.parse(input);
+
+      const isLeadExisting = await prisma.lead.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!isLeadExisting) {
+        throw new GraphQLError('Lead not found', {
+          extensions: {
+            code: 'NOT_FOUND',
+          },
+        });
+      }
+
+      const updatedLead = await prisma.lead.update({
+        where: {
+          id,
+        },
+        data: updatePayload,
+      });
+
+      return updatedLead;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new GraphQLError(
+            `[${error.code}]: A user with the same email or mobile number already exists.`,
+            {
+              extensions: {
+                code: 'BAD_REQUEST',
+              },
+            },
+          );
+        }
       }
 
       throw error;
